@@ -11,7 +11,8 @@ const createBlog = async (req, res) => {
       title,
       description,
       category,
-      image: req.file ? req.file.filename : "",
+      image: req.file ? req.file.path : "",
+
       user: req.user.id,
     });
 
@@ -115,7 +116,7 @@ const updateBlog = async (req, res) => {
       req.body.category || blog.category;
 
     if (req.file) {
-      blog.image = req.file.filename;
+      blog.image = req.file.path;
     }
 
     const updatedBlog = await blog.save();
