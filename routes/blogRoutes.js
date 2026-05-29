@@ -13,12 +13,21 @@ const upload = require("../middleware/upload");
 
 const router = express.Router();
 
-router.post("/create", protect, upload.single("image"), createBlog);
+const handleUpload = (req, res, next) => {
+  upload.single("image")(req, res, (err) => {
+    if (err) {
+      console.log("UPLOAD ERROR:", JSON.stringify(err), err.message, err.stack);
+      return res.status(500).json({ message: err.message || "Upload failed" });
+    }
+    next();
+  });
+};
+
+router.post("/create", protect, handleUpload, createBlog);
 router.get("/", getBlogs);
 router.get("/:id", getSingleBlog);
-router.put("/:id", protect, upload.single("image"), updateBlog);
+router.put("/:id", protect, handleUpload, updateBlog);
 router.delete("/:id", protect, deleteBlog);
 router.put("/:id/like", protect, likeBlog);
-
 
 module.exports = router;
