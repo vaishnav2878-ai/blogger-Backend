@@ -14,7 +14,6 @@ connectDB();
 
 const app = express();
 
-// Middleware
 app.use(express.json());
 app.use(cors({
   origin: [
@@ -26,20 +25,25 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization", "x-viewed-blogs"],
 }));
 
-// Static folder
 app.use("/uploads", express.static("uploads"));
 
-// Routes
+// Test Cloudinary ENV
+app.get("/test-cloudinary", (req, res) => {
+  res.json({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    has_secret: !!process.env.CLOUDINARY_API_SECRET
+  });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/blogs", blogRoutes);
 
-// Test Route
 app.get("/", (req, res) => {
   res.send("API Running...");
 });
 
-// Server
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
